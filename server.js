@@ -1,7 +1,3 @@
-// 📦 Simple Group Chat Module (Backend with Node.js + Socket.IO)
-// ✅ Supports chat rooms (group chat)
-// 🧱 Easy to extend with translation logic later
-
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -11,12 +7,17 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*', // for demo purposes, allow all origins
-    methods: ['GET', 'POST']
+    origin: "https://chat-client-zeta-nine.vercel.app", // Thay bằng domain của client
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
-app.use(cors());
+app.use(cors({
+  origin: "https://chat-client-zeta-nine.vercel.app",
+  methods: ["GET", "POST"],
+  credentials: true
+}));
 app.use(express.json());
 
 // In-memory storage for demo (you can replace this with DB)
@@ -42,7 +43,7 @@ io.on('connection', (socket) => {
     if (!messages[groupId]) messages[groupId] = [];
     messages[groupId].push(message);
 
-    // Emit to all in room (except sender by default)
+    // Emit to all in room
     io.to(groupId).emit('receive_message', message);
   });
 
